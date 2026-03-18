@@ -1,0 +1,68 @@
+-- Apaga a base de dados antiga se ela existir (Cuidado: isto apaga dados antigos!)
+DROP DATABASE IF EXISTS dbbiblioteca;
+
+-- Cria e usa a nova base de dados com o nome correto
+CREATE DATABASE dbbiblioteca;
+USE dbbiblioteca;
+
+-- 1. Tabela Livro
+CREATE TABLE livro (
+    idUnico INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(200) NOT NULL,
+    autor VARCHAR(150) NOT NULL,
+    anoPublicacao INT,
+    quantidadeDisponivel INT NOT NULL,
+    categoria VARCHAR(100)
+);
+
+-- 2. Tabela Usuario 
+-- A herança do UML resolvida através do polimorfismo numa única tabela.
+CREATE TABLE usuario (
+    matricula VARCHAR(50) PRIMARY KEY,
+    nome VARCHAR(150) NOT NULL,
+    endereco VARCHAR(255),
+    tipo VARCHAR(20) NOT NULL, -- 'ALUNO', 'PROFESSOR' ou 'FUNCIONARIO'
+    curso VARCHAR(100),        -- Preenchido apenas se for Aluno
+    departamento VARCHAR(100)  -- Preenchido apenas se for Professor
+);
+
+-- 3. Tabela Emprestimo
+CREATE TABLE emprestimo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_matricula VARCHAR(50) NOT NULL,
+    livro_id INT NOT NULL,
+    dataRetirada DATE NOT NULL,
+    dataDevolucaoPrevista DATE NOT NULL,
+    dataDevolucaoReal DATE,
+    situacao VARCHAR(50) NOT NULL, -- Os status que usamos no Java: 'Ativo', 'Devolvido', 'Atrasado'
+    
+    -- Chaves Estrangeiras (Relacionamentos UML)
+    FOREIGN KEY (usuario_matricula) REFERENCES usuario(matricula) ON DELETE CASCADE,
+    FOREIGN KEY (livro_id) REFERENCES livro(idUnico) ON DELETE CASCADE
+);
+
+-- 4. Tabela Reserva
+CREATE TABLE reserva (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_matricula VARCHAR(50) NOT NULL,
+    livro_id INT NOT NULL,
+    dataSolicitacao DATE NOT NULL,
+    dataExpiracao DATE NOT NULL,
+    status VARCHAR(50) NOT NULL, -- Os status que usamos no Java: 'Ativa', 'Expirada', 'Convertida'
+    
+    -- Chaves Estrangeiras (Relacionamentos UML)
+    FOREIGN KEY (usuario_matricula) REFERENCES usuario(matricula) ON DELETE CASCADE,
+    FOREIGN KEY (livro_id) REFERENCES livro(idUnico) ON DELETE CASCADE
+);
+
+-- 5. Tabela Multa
+CREATE TABLE multa (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    emprestimo_id INT NOT NULL,
+    diasAtraso INT NOT NULL,
+    valorTotal DECIMAL(10, 2) NOT NULL, -- DECIMAL é a melhor prática para moeda
+    statusPagamento VARCHAR(50) NOT NULL, -- Os status que usamos no Java: 'Pendente', 'Pago'
+    
+    -- Chave Estrangeira (Relacionamento UML)
+    FOREIGN KEY (emprestimo_id) REFERENCES emprestimo(id) ON DELETE CASCADE
+);
