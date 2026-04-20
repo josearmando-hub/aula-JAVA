@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca - Balcão de Empréstimos</title>
+</head>
+<body>
+    <nav style="margin-bottom: 20px; padding: 10px; background-color: #f0f0f0;">
+        <a th:href="@{/}">
+            <button>⬅️ Voltar para o Início (Login)</button>
+        </a>
+        <a th:href="@{/livros}">
+            <button>Ir para Gerenciamento de Livros ➡️</button>
+        </a>
+        <a th:href="@{/usuarios}"><button>Usuários</button></a>
+    </nav>
+    <hr>
+
+    <h1>Balcão de Atendimento</h1>
+    
+    <div th:if="${mensagemSucesso}" style="color: green;">
+        <h3 th:text="${mensagemSucesso}"></h3>
+    </div>
+    <div th:if="${mensagemErro}" style="color: red;">
+        <h3 th:text="${mensagemErro}"></h3>
+    </div>
+
+    <h3>Realizar Novo Empréstimo</h3>
+    <form th:action="@{/balcao/emprestar}" method="post">
+        
+        <label>Escolha o Usuário:</label>
+        <select name="usuarioId" required>
+            <option value="">-- Selecione --</option>
+            <option th:each="usuario : ${usuarios}" 
+                    th:value="${usuario.id}" 
+                    th:text="${usuario.nome} + ' (' + ${usuario.quantidadeEmprestimosAtuais} + ' livros)'">
+            </option>
+        </select>
+        
+        <br><br>
+
+        <label>Escolha o Livro:</label>
+        <select name="livroId" required>
+            <option value="">-- Selecione --</option>
+            <option th:each="livro : ${livros}" 
+                    th:value="${livro.id}" 
+                    th:text="${livro.titulo} + ' (' + ${livro.copiasDisponiveis} + ' disponíveis)'">
+            </option>
+        </select>
+        
+        <br><br>
+        
+        <button type="submit">Aprovar Empréstimo</button>
+    </form>
+
+    <hr>
+
+    <h3>Empréstimos Registrados</h3>
+    <table border="1" style="width: 100%; text-align: left;">
+        <thead>
+            <tr>
+                <th>Usuário</th>
+                <th>Livro</th>
+                <th>Data</th>
+                <th>Status</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="emp : ${emprestimos}">
+                <td th:text="${emp.usuario?.nome ?: 'Usuário Excluído'}"></td>
+                <td th:text="${emp.livro.titulo}"></td>
+                <td th:text="${emp.dataEmprestimo}"></td>
+                <td th:text="${emp.status}"></td>
+                <td>
+                    <form th:if="${emp.status == 'ATIVO'}" 
+                          th:action="@{/balcao/devolver/{id}(id=${emp.id})}" 
+                          method="post">
+                        <button type="submit" style="background-color: #ffccbc; cursor: pointer;">Devolver Livro</button>
+                    </form>
+                    <span th:if="${emp.status == 'DEVOLVIDO'}">✅ Concluído</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
