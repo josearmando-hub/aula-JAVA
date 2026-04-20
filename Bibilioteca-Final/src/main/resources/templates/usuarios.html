@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca - Gerenciar Usuários</title>
+</head>
+<body>
+    <nav style="margin-bottom: 20px; padding: 10px; background-color: #f0f0f0;">
+        <a th:href="@{/}"><button>⬅️ Início</button></a>
+        <a th:href="@{/livros}"><button>Livros</button></a>
+        <a th:href="@{/balcao}"><button>Balcão de Empréstimos</button></a>
+    </nav>
+
+    <h1>Gerenciamento de Usuários</h1>
+
+    <h3>Cadastrar Novo Usuário</h3>
+    <form th:action="@{/usuarios/salvar}" method="post">
+        <label>Nome:</label>
+        <input type="text" name="nome" required/>
+        
+        <label>Matrícula/RA:</label>
+        <input type="text" name="matricula" required/>
+        
+        <label>Tipo:</label>
+        <select name="tipo" required>
+            <option value="ALUNO">Aluno (Limite: 3 livros)</option>
+            <option value="PROFESSOR">Professor (Limite: 5 livros)</option>
+        </select>
+        
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <hr>
+
+    <h3>Usuários Cadastrados</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Matrícula</th>
+                <th>Tipo</th>
+                <th>Empréstimos Atuais</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="u : ${usuarios}">
+                <td th:text="${u.nome}"></td>
+                <td th:text="${u.matricula}"></td>
+                <td th:text="${u.tipoUsuario}"></td>
+                <td th:text="${u.quantidadeEmprestimosAtuais}"></td>
+                <td>
+                    <a th:href="@{/usuarios/excluir/{id}(id=${u.id})}" 
+                       onclick="return confirm('Deseja excluir este usuário?')">Excluir</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

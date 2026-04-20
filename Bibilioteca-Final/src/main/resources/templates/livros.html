@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca - Livros</title>
+</head>
+<body>
+    <h1>Gerenciamento de Livros</h1>
+
+    <h3>Cadastrar Novo Livro</h3>
+    <form th:action="@{/livros/salvar}" th:object="${novoLivro}" method="post">
+        <label>Título:</label>
+        <input type="text" th:field="*{titulo}" required/>
+        <label>Cópias:</label>
+        <input type="number" th:field="*{copiasDisponiveis}" required/>
+        <button type="submit">Salvar Livro</button>
+    </form>
+
+    <hr>
+
+    <h3>Acervo Atual</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Cópias Disponíveis</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="livro : ${livros}">
+                <td th:text="${livro.titulo}"></td>
+                <td th:text="${livro.copiasDisponiveis}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+<nav style="margin-bottom: 20px; padding: 10px; background-color: #f0f0f0;">
+        <a th:href="@{/}">
+            <button>⬅️ Voltar para o Início (Login)</button>
+        </a>
+        <a th:href="@{/balcao}">
+            <button>Ir para Balcão de Empréstimos ➡️</button>
+        </a>    
+        <a th:href="@{/usuarios}"><button>Usuários</button></a>
+    </nav>
+    <hr>
+</html>
