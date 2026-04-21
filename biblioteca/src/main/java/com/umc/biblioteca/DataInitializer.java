@@ -21,18 +21,18 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         
-        // Mantemos os livros que já tínhamos feito
+        // Livros 
         if (livroRepository.count() == 0) {
             Livro livro1 = new Livro(); livro1.setTitulo("Java para Iniciantes"); livro1.setCopiasDisponiveis(3);
             livroRepository.save(livro1);
         }
 
-        // Inserimos os usuários se o banco estiver vazio
+        // Usuarios campos basicos 
         if (usuarioRepository.count() == 0) {
             System.out.println("Inserindo usuários de teste...");
 
             Aluno aluno = new Aluno();
-            aluno.setNome("Jonathas - Estudante");
+            aluno.setNome("José Armando - Estudante");
             aluno.setMatricula("RA123456");
             
             Professor professor = new Professor();
